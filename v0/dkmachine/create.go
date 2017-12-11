@@ -38,6 +38,13 @@ type CreateOptions struct {
 
 	TLSSan string `json:"tls_san"`
 
+	// AmazonEC2 Options
+	AmazonEC2AccessKey    string `json:"amazonec2_access_key"`
+	AmazonEC2AMI          string `json:"amazonec2_ami"`
+	AmazonEC2InstanceType string `json:"amazonec2_instance_type"`
+	AmazonEC2Region       string `json:"amazonec2_region"`
+
+	// VirtualBox Options
 	VirtualBoxBoot2DockerURL      string `json:"virtualbox_boot2docker_url"`
 	VirtualBoxCPUCount            int    `json:"virtualbox_cpu_count"`
 	VirtualBoxDiskSize            int    `json:"virtualbox_disk_size"`
@@ -63,7 +70,26 @@ func (opt *CreateOptions) Args(name string) []string {
 		args = append(args, "--help")
 		return args
 	}
+
+	switch opt.Driver {
+	case "amazonec2":
+		args = append(args, opt.ArgsForAmazonEC2()...)
+	}
 	args = append(args, name)
+	return args
+}
+
+// ArgsForAmazonEC2 ...
+func (opt *CreateOptions) ArgsForAmazonEC2() []string {
+	args := []string{
+		"--driver", "amazonec2",
+	}
+	if opt.AmazonEC2InstanceType != "" {
+		args = append(args, "--amazonec2-instance-type", opt.AmazonEC2InstanceType)
+	}
+	if opt.AmazonEC2Region != "" {
+		args = append(args, "--amazonec2-region", opt.AmazonEC2Region)
+	}
 	return args
 }
 
