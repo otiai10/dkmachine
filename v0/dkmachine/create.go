@@ -3,6 +3,7 @@ package dkmachine
 import (
 	"bytes"
 	"encoding/base64"
+	"fmt"
 	"os/exec"
 
 	"github.com/google/uuid"
@@ -110,13 +111,14 @@ func Create(opt *CreateOptions) (*Machine, error) {
 	if !opt.Dry {
 
 		cmd := exec.Command(bin, args...)
-		if err := cmd.Run(); err != nil {
-			return nil, err
+		combinedoutput, err := cmd.CombinedOutput()
+		if err != nil {
+			return nil, fmt.Errorf("%v: %v", err, string(combinedoutput))
 		}
 
-		_, err := machine.Inspect()
+		_, err = machine.Inspect()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to inspect created machine: %v", err)
 		}
 
 	}
@@ -138,5 +140,5 @@ func genUUID() string {
 	encoder := base64.NewEncoder(base64.StdEncoding, buf)
 	defer encoder.Close()
 	encoder.Write([]byte(uid.String()))
-	return buf.String()
+	return buf.String()[:8]
 }
