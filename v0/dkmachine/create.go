@@ -91,6 +91,13 @@ func (opt *CreateOptions) ArgsForAmazonEC2() []string {
 	if opt.AmazonEC2Region != "" {
 		args = append(args, "--amazonec2-region", opt.AmazonEC2Region)
 	}
+
+	// args = append(args,
+	// // https://docs.docker.com/machine/drivers/aws/#vpc-connectivity
+	// "--amazonec2-private-address-only",
+	// "--amazonec2-use-private-address",
+	// )
+
 	return args
 }
 
