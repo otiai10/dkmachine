@@ -45,7 +45,8 @@ type CreateOptions struct {
 	AmazonEC2InstanceType       string `json:"amazonec2_instance_type"`
 	AmazonEC2Region             string `json:"amazonec2_region"`
 	AmazonEC2IAMInstanceProfile string `json:"amazonec2_iam_instance_profile"`
-	// AmazonEC2SecurityGroup string `json:"amazonec2_security_group"`
+	AmazonEC2SecurityGroup      string `json:"amazonec2_security_group"`
+	AmazonEC2RootSize           int    `json:"amazonec2_root_size"`
 
 	// VirtualBox Options
 	VirtualBoxBoot2DockerURL      string `json:"virtualbox_boot2docker_url"`
@@ -96,9 +97,12 @@ func (opt *CreateOptions) ArgsForAmazonEC2() []string {
 	if opt.AmazonEC2IAMInstanceProfile != "" {
 		args = append(args, "--amazonec2-iam-instance-profile", opt.AmazonEC2IAMInstanceProfile)
 	}
-	// if opt.AmazonEC2SecurityGroup != "" {
-	//   args = append(args, "--amazonec2-security-group", opt.AmazonEC2SecurityGroup)
-	// }
+	if opt.AmazonEC2SecurityGroup != "" {
+		args = append(args, "--amazonec2-security-group", opt.AmazonEC2SecurityGroup)
+	}
+	if opt.AmazonEC2RootSize != 0 {
+		args = append(args, "--amazonec2-root-size", fmt.Sprintf("%d", opt.AmazonEC2RootSize))
+	}
 
 	// args = append(args,
 	// // https://docs.docker.com/machine/drivers/aws/#vpc-connectivity
