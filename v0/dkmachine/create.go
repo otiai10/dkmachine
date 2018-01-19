@@ -40,13 +40,14 @@ type CreateOptions struct {
 	TLSSan string `json:"tls_san"`
 
 	// AmazonEC2 Options
-	AmazonEC2AccessKey          string `json:"amazonec2_access_key"`
-	AmazonEC2AMI                string `json:"amazonec2_ami"`
-	AmazonEC2InstanceType       string `json:"amazonec2_instance_type"`
-	AmazonEC2Region             string `json:"amazonec2_region"`
-	AmazonEC2IAMInstanceProfile string `json:"amazonec2_iam_instance_profile"`
-	AmazonEC2SecurityGroup      string `json:"amazonec2_security_group"`
-	AmazonEC2RootSize           int    `json:"amazonec2_root_size"`
+	AmazonEC2AccessKey           string `json:"amazonec2_access_key"`
+	AmazonEC2AMI                 string `json:"amazonec2_ami"`
+	AmazonEC2InstanceType        string `json:"amazonec2_instance_type"`
+	AmazonEC2Region              string `json:"amazonec2_region"`
+	AmazonEC2IAMInstanceProfile  string `json:"amazonec2_iam_instance_profile"`
+	AmazonEC2SecurityGroup       string `json:"amazonec2_security_group"`
+	AmazonEC2RootSize            int    `json:"amazonec2_root_size"`
+	AmazonEC2RequestSpotInstance bool   `json:"amazonec2_request_spot_instance"`
 
 	// VirtualBox Options
 	VirtualBoxBoot2DockerURL      string `json:"virtualbox_boot2docker_url"`
@@ -102,6 +103,9 @@ func (opt *CreateOptions) ArgsForAmazonEC2() []string {
 	}
 	if opt.AmazonEC2RootSize != 0 {
 		args = append(args, "--amazonec2-root-size", fmt.Sprintf("%d", opt.AmazonEC2RootSize))
+	}
+	if opt.AmazonEC2RequestSpotInstance {
+		args = append(args, "--amazonec2-request-spot-instance")
 	}
 
 	// args = append(args,
