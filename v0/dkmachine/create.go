@@ -69,7 +69,7 @@ type CreateOptions struct {
 }
 
 // Args ...
-func (opt *CreateOptions) Args(name string) []string {
+func (opt *CreateOptions) Args() []string {
 	args := []string{"create"}
 	if opt.Help {
 		args = append(args, "--help")
@@ -80,40 +80,8 @@ func (opt *CreateOptions) Args(name string) []string {
 	case "amazonec2":
 		args = append(args, opt.ArgsForAmazonEC2()...)
 	}
-	args = append(args, name)
-	return args
-}
-
-// ArgsForAmazonEC2 ...
-func (opt *CreateOptions) ArgsForAmazonEC2() []string {
-	args := []string{
-		"--driver", "amazonec2",
-	}
-	if opt.AmazonEC2InstanceType != "" {
-		args = append(args, "--amazonec2-instance-type", opt.AmazonEC2InstanceType)
-	}
-	if opt.AmazonEC2Region != "" {
-		args = append(args, "--amazonec2-region", opt.AmazonEC2Region)
-	}
-	if opt.AmazonEC2IAMInstanceProfile != "" {
-		args = append(args, "--amazonec2-iam-instance-profile", opt.AmazonEC2IAMInstanceProfile)
-	}
-	if opt.AmazonEC2SecurityGroup != "" {
-		args = append(args, "--amazonec2-security-group", opt.AmazonEC2SecurityGroup)
-	}
-	if opt.AmazonEC2RootSize != 0 {
-		args = append(args, "--amazonec2-root-size", fmt.Sprintf("%d", opt.AmazonEC2RootSize))
-	}
-	if opt.AmazonEC2RequestSpotInstance {
-		args = append(args, "--amazonec2-request-spot-instance")
-	}
-
-	// args = append(args,
-	// // https://docs.docker.com/machine/drivers/aws/#vpc-connectivity
-	// "--amazonec2-private-address-only",
-	// "--amazonec2-use-private-address",
-	// )
-
+	opt.Name = id(opt.Name)
+	args = append(args, opt.Name)
 	return args
 }
 
@@ -123,8 +91,7 @@ func Create(opt *CreateOptions) (*Machine, error) {
 	if opt == nil {
 		opt = &CreateOptions{}
 	}
-	opt.Name = id(opt.Name)
-	args := opt.Args(opt.Name)
+	args := opt.Args()
 
 	machine := &Machine{
 		CreateOptions: opt,
