@@ -1,6 +1,9 @@
 package dkmachine
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 const bin = "docker-machine"
 
@@ -16,7 +19,17 @@ func (m *Machine) Host() string {
 	if m.Inspection == nil {
 		return "dkmachine:unknown_host"
 	}
-	return fmt.Sprintf("tcp://%s:%s", m.Inspection.Driver.IPAddress, "2376")
+	u, err := url.Parse(m.Inspection.Driver.IPAddress)
+	if err != nil {
+		return fmt.Sprintf("dkmachine:%v", err)
+	}
+	if u.Scheme == "" {
+		u.Scheme = "tcp"
+	}
+	if u.Port() == "" {
+		u.Host += ":2376"
+	}
+	return u.String()
 }
 
 // CertPath ...

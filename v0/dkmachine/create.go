@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os/exec"
+	"strings"
 
 	"github.com/google/uuid"
 )
@@ -49,6 +50,9 @@ type CreateOptions struct {
 	AmazonEC2RootSize            int    `json:"amazonec2_root_size"`
 	AmazonEC2RequestSpotInstance bool   `json:"amazonec2_request_spot_instance"`
 
+	// GoogleComputeEngine Options
+	GoogleProject string `json:"google_project"`
+
 	// VirtualBox Options
 	VirtualBoxBoot2DockerURL      string `json:"virtualbox_boot2docker_url"`
 	VirtualBoxCPUCount            int    `json:"virtualbox_cpu_count"`
@@ -79,6 +83,8 @@ func (opt *CreateOptions) Args() []string {
 	switch opt.Driver {
 	case "amazonec2":
 		args = append(args, opt.ArgsForAmazonEC2()...)
+	case "google":
+		args = append(args, opt.ArgsForGoogleComputeEngine()...)
 	}
 	opt.Name = id(opt.Name)
 	args = append(args, opt.Name)
@@ -103,12 +109,19 @@ func Create(opt *CreateOptions) (*Machine, error) {
 		cmd := exec.Command(bin, args...)
 		combinedoutput, err := cmd.CombinedOutput()
 		if err != nil {
-			return nil, fmt.Errorf("%v: %v", err, string(combinedoutput))
+			return machine, fmt.Errorf("%v: %v", err, string(combinedoutput))
 		}
 
 		_, err = machine.Inspect()
 		if err != nil {
-			return nil, fmt.Errorf("failed to inspect created machine: %v", err)
+			return machine, fmt.Errorf("failed to inspect created machine: %v", err)
+		}
+		if machine.Inspection.Driver.IPAddress == "" {
+			env, err := machine.Env()
+			if err != nil {
+				return machine, fmt.Errorf("failed to get env vars of this machine: %v", err)
+			}
+			machine.Inspection.Driver.IPAddress = env.Host
 		}
 
 	}
@@ -130,5 +143,5 @@ func genUUID() string {
 	encoder := base64.NewEncoder(base64.StdEncoding, buf)
 	defer encoder.Close()
 	encoder.Write([]byte(uid.String()))
-	return buf.String()[:8]
+	return strings.ToLower(buf.String()[:8])
 }
