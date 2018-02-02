@@ -1,6 +1,7 @@
 package dkmachine
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -18,6 +19,18 @@ func (opt *CreateOptions) ArgsForGoogleComputeEngine() []string {
 
 	if opt.GoogleProject != "" {
 		args = append(args, "--google-project", opt.GoogleProject)
+	}
+
+	if opt.GoogleZone != "" {
+		args = append(args, "--google-zone", opt.GoogleZone)
+	}
+
+	if opt.GoogleScopes != "" {
+		args = append(args, "--google-scopes", opt.GoogleScopes)
+	}
+
+	if opt.GoogleDiskSize != 0 {
+		args = append(args, "--google-disk-size", fmt.Sprintf("%d", opt.GoogleDiskSize))
 	}
 
 	if !GoogleMachineNameExpression.MatchString(opt.Name) {

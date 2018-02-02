@@ -51,7 +51,10 @@ type CreateOptions struct {
 	AmazonEC2RequestSpotInstance bool   `json:"amazonec2_request_spot_instance"`
 
 	// GoogleComputeEngine Options
-	GoogleProject string `json:"google_project"`
+	GoogleProject  string `json:"google_project"`
+	GoogleZone     string `json:"google_zone"`
+	GoogleScopes   string `json:"google_scopes"`
+	GoogleDiskSize int    `json:"google_disk_size"`
 
 	// VirtualBox Options
 	VirtualBoxBoot2DockerURL      string `json:"virtualbox_boot2docker_url"`
@@ -112,16 +115,11 @@ func Create(opt *CreateOptions) (*Machine, error) {
 			return machine, fmt.Errorf("%v: %v", err, string(combinedoutput))
 		}
 
-		_, err = machine.Inspect()
-		if err != nil {
+		if _, err := machine.Inspect(); err != nil {
 			return machine, fmt.Errorf("failed to inspect created machine: %v", err)
 		}
-		if machine.Inspection.Driver.IPAddress == "" {
-			env, err := machine.Env()
-			if err != nil {
-				return machine, fmt.Errorf("failed to get env vars of this machine: %v", err)
-			}
-			machine.Inspection.Driver.IPAddress = env.Host
+		if _, err := machine.GetEnv(); err != nil {
+			return machine, fmt.Errorf("failed to get env vars of this machine: %v", err)
 		}
 
 	}

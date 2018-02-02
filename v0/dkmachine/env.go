@@ -36,8 +36,8 @@ func (e *Env) Decode(b []byte) error {
 	return nil
 }
 
-// Env ...
-func (m *Machine) Env() (*Env, error) {
+// GetEnv ...
+func (m *Machine) GetEnv() (*Env, error) {
 	cmd := exec.Command(bin, "env", m.Name)
 	o, err := cmd.Output()
 	if err != nil {
@@ -47,5 +47,6 @@ func (m *Machine) Env() (*Env, error) {
 	if err := env.Decode(o); err != nil {
 		return nil, err
 	}
+	m.Env = env
 	return env, nil
 }
