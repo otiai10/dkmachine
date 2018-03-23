@@ -37,3 +37,8 @@ func (m *Machine) Host() string {
 func (m *Machine) CertPath() string {
 	return m.Env.CertPath
 }
+
+// Version ...
+func (m *Machine) Version() string {
+	return ""
+}
