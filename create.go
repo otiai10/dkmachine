@@ -1,11 +1,19 @@
 package dkmachine
 
 import (
+	"bytes"
 	"fmt"
+
+	"github.com/docker/machine/libmachine/log"
 )
 
 // Create ...
 func Create(opt *CreateOptions) (*Machine, error) {
+
+	// FIXME: docker/machine/libmachine/log uses global static logger
+	b := bytes.NewBuffer(nil)
+	log.SetOutWriter(b)
+	log.SetErrWriter(b)
 
 	c, err := NewClient(opt)
 	if err != nil {
