@@ -3,6 +3,7 @@ package dkmachine
 import (
 	"encoding/json"
 	"path/filepath"
+	"reflect"
 
 	"github.com/docker/machine/commands/mcndirs"
 	"github.com/docker/machine/libmachine"
@@ -91,8 +92,47 @@ func (client *Client) CreateFlags() rpcdriver.RPCFlags {
 func (client *Client) additionalOptionsForCreate(flags rpcdriver.RPCFlags) rpcdriver.RPCFlags {
 	switch client.Host.DriverName {
 	case "amazonec2":
-		flags.Values["amazonec2-region"] = client.CreateOptions.AmazonEC2Region
+		return client.additionalOptionsForCreateAmazonEC2(flags)
 	case "google":
 	}
 	return flags
+}
+
+func (client *Client) additionalOptionsForCreateAmazonEC2(flags rpcdriver.RPCFlags) rpcdriver.RPCFlags {
+	opt := client.CreateOptions
+	values := flags.Values
+	appendIfNotZero(values, opt.AmazonEC2Region, "amazonec2-region")
+	appendIfNotZero(values, opt.AmazonEC2InstanceType, "amazonec2-instance-type")
+	appendIfNotZero(values, opt.AmazonEC2IAMInstanceProfile, "amazonec2-iam-instance-profile")
+	appendIfNotZero(values, opt.AmazonEC2SecurityGroup, "amazonec2-security-group")
+	appendIfNotZero(values, opt.AmazonEC2RootSize, "amazonec2-root-size")
+	appendIfNotZero(values, opt.AmazonEC2RequestSpotInstance, "amazonec2-request-spot-instance")
+	flags.Values = values
+	return flags
+}
+
+func appendIfNotZero(values map[string]interface{}, value interface{}, name string) map[string]interface{} {
+	if isZero(reflect.ValueOf(value)) {
+		return values
+	}
+	values[name] = value
+	return values
+}
+
+func isZero(v reflect.Value) bool {
+	switch v.Kind() {
+	case reflect.Array, reflect.String:
+		return v.Len() == 0
+	case reflect.Bool:
+		return !v.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return v.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		return v.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return v.Float() == 0
+	case reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
+		return v.IsNil()
+	}
+	return false
 }
