@@ -1,6 +1,7 @@
 package dkmachine
 
 import (
+	"github.com/docker/machine/commands/mcndirs"
 	"github.com/docker/machine/drivers/amazonec2"
 	"github.com/docker/machine/drivers/google"
 	"github.com/docker/machine/libmachine/drivers"
@@ -22,6 +23,7 @@ func driverAmazonEC2(opt *CreateOptions) *amazonec2.Driver {
 
 	// common
 	d.MachineName = opt.Name
+	d.StorePath = mcndirs.GetBaseDir()
 
 	return d
 }
@@ -35,6 +37,7 @@ func driverGoogleCloud(opt *CreateOptions) *google.Driver {
 
 	// common
 	d.MachineName = opt.Name
+	d.StorePath = mcndirs.GetBaseDir()
 
 	return d
 }

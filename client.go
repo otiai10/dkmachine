@@ -2,7 +2,6 @@ package dkmachine
 
 import (
 	"encoding/json"
-	"fmt"
 	"path/filepath"
 
 	"github.com/docker/machine/commands/mcndirs"
@@ -46,13 +45,6 @@ func NewClient(opt *CreateOptions) (*Client, error) {
 	name := d.GetMachineName()
 	certdir := mcndirs.GetMachineCertDir()
 	machinesdir := mcndirs.GetMachineDir()
-
-	fmt.Println(
-		"001",
-		name,
-		certdir,
-		machinesdir,
-	)
 
 	h.HostOptions = &host.Options{
 		AuthOptions: &auth.Options{
