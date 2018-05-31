@@ -104,9 +104,15 @@ func (client *Client) additionalOptionsForCreateAmazonEC2(flags rpcdriver.RPCFla
 	appendIfNotZero(values, opt.AmazonEC2Region, "amazonec2-region")
 	appendIfNotZero(values, opt.AmazonEC2InstanceType, "amazonec2-instance-type")
 	appendIfNotZero(values, opt.AmazonEC2IAMInstanceProfile, "amazonec2-iam-instance-profile")
-	appendIfNotZero(values, opt.AmazonEC2SecurityGroup, "amazonec2-security-group")
+	appendIfNotZero(values, []string{opt.AmazonEC2SecurityGroup}, "amazonec2-security-group")
 	appendIfNotZero(values, opt.AmazonEC2RootSize, "amazonec2-root-size")
 	appendIfNotZero(values, opt.AmazonEC2RequestSpotInstance, "amazonec2-request-spot-instance")
+
+	// FIXME: opt.SwarmXxx
+	values["swarm-master"] = false
+	values["swarm-host"] = ""
+	values["swarm-discovery"] = ""
+
 	flags.Values = values
 	return flags
 }

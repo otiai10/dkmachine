@@ -28,7 +28,7 @@ func driverAmazonEC2(opt *CreateOptions) *amazonec2.Driver {
 	d.StorePath = mcndirs.GetBaseDir()
 
 	d.Region = opt.AmazonEC2Region
-	d.SecurityGroupName = opt.AmazonEC2SecurityGroup
+	d.SecurityGroupNames = []string{opt.AmazonEC2SecurityGroup}
 	d.InstanceType = opt.AmazonEC2InstanceType
 	d.IamInstanceProfile = opt.AmazonEC2IAMInstanceProfile
 	d.RootSize = int64(opt.AmazonEC2RootSize)
