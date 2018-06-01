@@ -1,3 +1,14 @@
+# dkmachine
+
 [![Build Status](https://travis-ci.org/otiai10/dkmachine.svg?branch=master)](https://travis-ci.org/otiai10/dkmachine)
 
-`WARNING` This package is still v0.
+Go SDK API accessor for `docker-machine`.
+
+```go
+opt := &dkmachine.CreateOptions{
+  Name:   "foobar",
+  Driver: "virtualbox",
+}
+
+machine, err := dkmachine.Create(opt)
+```
