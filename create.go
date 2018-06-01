@@ -15,31 +15,34 @@ func Create(opt *CreateOptions) (*Machine, error) {
 	log.SetOutWriter(b)
 	log.SetErrWriter(b)
 
+	machine := &Machine{CreateOptions: opt}
+
 	c, err := NewClient(opt)
 	if err != nil {
-		return nil, err
+		return machine, err
 	}
 
 	exists, err := c.API.Exists(c.Host.Name)
 	if err != nil {
-		return nil, err
+		return machine, err
 	}
 	if exists {
-		return nil, fmt.Errorf("a machine with name %s already exists", c.Host.Name)
+		return machine, fmt.Errorf("a machine with name %s already exists", c.Host.Name)
 	}
 
 	driverflags := c.CreateFlags()
 	if err := c.Host.Driver.SetConfigFromFlags(driverflags); err != nil {
-		return nil, err
+		return machine, err
 	}
 
 	if err := c.API.Create(c.Host); err != nil {
-		return nil, err
+		return machine, err
 	}
 
 	if err := c.API.Save(c.Host); err != nil {
-		return nil, err
+		return machine, err
 	}
 
-	return &Machine{opt, c.Host}, nil
+	machine.HostConfig = c.Host
+	return machine, nil
 }
