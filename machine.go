@@ -62,6 +62,6 @@ func (m *Machine) GetPrivateIPAddress() string {
 		// FIXME: hard coding... ;(
 		return fmt.Sprintf("%v", dest["PrivateIPAddress"])
 	default:
-		return "/* TODO: dkmachine */"
+		return fmt.Sprintf("/* TODO: dkmachine: Private IP Address for %v is not implemented yet */", m.HostConfig.DriverName)
 	}
 }
