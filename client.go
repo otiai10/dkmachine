@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"path/filepath"
 	"reflect"
+	"regexp"
+	"strings"
 
 	"github.com/docker/machine/commands/mcndirs"
 	"github.com/docker/machine/libmachine"
@@ -16,6 +18,11 @@ import (
 	"github.com/docker/machine/libmachine/drivers/rpc"
 )
 
+var (
+	// GoogleMachineNameExpression ...
+	GoogleMachineNameExpression = regexp.MustCompile("^(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)$")
+)
+
 // Client ...
 type Client struct {
 	API           *libmachine.Client
@@ -25,6 +32,13 @@ type Client struct {
 
 // NewClient ...
 func NewClient(opt *CreateOptions) (*Client, error) {
+
+	if !GoogleMachineNameExpression.MatchString(opt.Name) {
+		// TODO: Refactor
+		opt.Name = strings.Replace(opt.Name, ".", "-", -1)
+		opt.Name = strings.Replace(opt.Name, "_", "-", -1)
+		opt.Name = strings.ToLower(opt.Name)
+	}
 
 	d := getDriver(opt)
 
@@ -94,6 +108,7 @@ func (client *Client) additionalOptionsForCreate(flags rpcdriver.RPCFlags) rpcdr
 	case "amazonec2":
 		return client.additionalOptionsForCreateAmazonEC2(flags)
 	case "google":
+		return client.additionalOptionsForCreateGoogle(flags)
 	}
 	return flags
 }
@@ -113,6 +128,17 @@ func (client *Client) additionalOptionsForCreateAmazonEC2(flags rpcdriver.RPCFla
 	values["swarm-host"] = ""
 	values["swarm-discovery"] = ""
 
+	flags.Values = values
+	return flags
+}
+
+func (client *Client) additionalOptionsForCreateGoogle(flags rpcdriver.RPCFlags) rpcdriver.RPCFlags {
+	opt := client.CreateOptions
+	values := flags.Values
+	appendIfNotZero(values, opt.GoogleZone, "google-zone")
+	appendIfNotZero(values, opt.GoogleDiskSize, "google-disk-size")
+	appendIfNotZero(values, opt.GoogleProject, "google-project")
+	appendIfNotZero(values, opt.GoogleScopes, "google-scopes")
 	flags.Values = values
 	return flags
 }
