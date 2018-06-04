@@ -61,6 +61,10 @@ func (m *Machine) GetPrivateIPAddress() string {
 	case "amazonec2":
 		// FIXME: hard coding... ;(
 		return fmt.Sprintf("%v", dest["PrivateIPAddress"])
+	case "google":
+		// TODO: https://github.com/otiai10/awsub/issues/84
+		// m.HostConfig.Driver.GetIP()
+		return "/* TODO: GCP instance private IP Address */"
 	default:
 		return fmt.Sprintf("/* TODO: dkmachine: Private IP Address for %v is not implemented yet */", m.HostConfig.DriverName)
 	}
