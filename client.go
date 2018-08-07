@@ -122,6 +122,8 @@ func (client *Client) additionalOptionsForCreateAmazonEC2(flags rpcdriver.RPCFla
 	appendIfNotZero(values, []string{opt.AmazonEC2SecurityGroup}, "amazonec2-security-group")
 	appendIfNotZero(values, opt.AmazonEC2RootSize, "amazonec2-root-size")
 	appendIfNotZero(values, opt.AmazonEC2RequestSpotInstance, "amazonec2-request-spot-instance")
+	appendIfNotZero(values, opt.AmazonEC2VpcID, "amazonec2-vpc-id")
+	appendIfNotZero(values, opt.AmazonEC2SubnetID, "amazonec2-subnet-id")
 
 	// FIXME: opt.SwarmXxx
 	values["swarm-master"] = false

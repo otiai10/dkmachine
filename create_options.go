@@ -39,6 +39,8 @@ type CreateOptions struct {
 	AmazonEC2SecurityGroup       string `json:"amazonec2_security_group"`
 	AmazonEC2RootSize            int    `json:"amazonec2_root_size"`
 	AmazonEC2RequestSpotInstance bool   `json:"amazonec2_request_spot_instance"`
+	AmazonEC2VpcID               string `json:"amazonec2_vpc_id"`
+	AmazonEC2SubnetID            string `json:"amazonec2_subnet_id"`
 
 	// GoogleComputeEngine Options
 	GoogleProject  string `json:"google_project"`
