@@ -5,6 +5,7 @@ import (
 	"github.com/docker/machine/drivers/amazonec2"
 	"github.com/docker/machine/drivers/google"
 	"github.com/docker/machine/libmachine/drivers"
+	"github.com/otiai10/machine/drivers/hyperv"
 	"github.com/otiai10/machine/drivers/virtualbox"
 )
 
@@ -16,6 +17,8 @@ func getDriver(opt *CreateOptions) drivers.Driver {
 		return driverGoogleCloud(opt)
 	case "virtualbox":
 		return driverVirtualbox(opt)
+	case "hyperv":
+		return driverHyperv(opt)
 	}
 	return nil
 }
@@ -56,6 +59,13 @@ func driverGoogleCloud(opt *CreateOptions) *google.Driver {
 
 func driverVirtualbox(opt *CreateOptions) *virtualbox.Driver {
 	d := virtualbox.NewDriver("", "")
+	d.MachineName = opt.Name
+	d.StorePath = mcndirs.GetBaseDir()
+	return d
+}
+
+func driverHyperv(opt *CreateOptions) *hyperv.Driver {
+	d := hyperv.NewDriver("", "")
 	d.MachineName = opt.Name
 	d.StorePath = mcndirs.GetBaseDir()
 	return d
