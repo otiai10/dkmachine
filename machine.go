@@ -14,6 +14,8 @@ const bin = "docker-machine"
 type Machine struct {
 	CreateOptions *CreateOptions `json:"create_options"`
 	HostConfig    *host.Host
+
+	GCEInternalNetworkIPAddress string
 }
 
 // Host ...
@@ -62,9 +64,8 @@ func (m *Machine) GetPrivateIPAddress() string {
 		// FIXME: hard coding... ;(
 		return fmt.Sprintf("%v", dest["PrivateIPAddress"])
 	case "google":
-		// TODO: https://github.com/otiai10/awsub/issues/84
-		// m.HostConfig.Driver.GetIP()
-		return "/* TODO: GCP instance private IP Address */"
+		// https://github.com/otiai10/awsub/issues/84
+		return m.GCEInternalNetworkIPAddress
 	default:
 		return fmt.Sprintf("/* TODO: dkmachine: Private IP Address for %v is not implemented yet */", m.HostConfig.DriverName)
 	}
