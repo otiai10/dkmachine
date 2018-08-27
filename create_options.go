@@ -43,10 +43,11 @@ type CreateOptions struct {
 	AmazonEC2SubnetID            string `json:"amazonec2_subnet_id"`
 
 	// GoogleComputeEngine Options
-	GoogleProject  string `json:"google_project"`
-	GoogleZone     string `json:"google_zone"`
-	GoogleScopes   string `json:"google_scopes"`
-	GoogleDiskSize int    `json:"google_disk_size"`
+	GoogleProject  string   `json:"google_project"`
+	GoogleZone     string   `json:"google_zone"`
+	GoogleScopes   string   `json:"google_scopes"`
+	GoogleDiskSize int      `json:"google_disk_size"`
+	GoogleTags     []string `json:"google_tags"`
 
 	// VirtualBox Options
 	VirtualBoxBoot2DockerURL      string `json:"virtualbox_boot2docker_url"`

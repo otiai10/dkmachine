@@ -141,6 +141,7 @@ func (client *Client) additionalOptionsForCreateGoogle(flags rpcdriver.RPCFlags)
 	appendIfNotZero(values, opt.GoogleDiskSize, "google-disk-size")
 	appendIfNotZero(values, opt.GoogleProject, "google-project")
 	appendIfNotZero(values, opt.GoogleScopes, "google-scopes")
+	appendIfNotZero(values, strings.Join(opt.GoogleTags, ","), "google-tags")
 	flags.Values = values
 	return flags
 }

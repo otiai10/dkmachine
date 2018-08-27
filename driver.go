@@ -1,6 +1,8 @@
 package dkmachine
 
 import (
+	"strings"
+
 	"github.com/docker/machine/commands/mcndirs"
 	"github.com/docker/machine/drivers/amazonec2"
 	"github.com/docker/machine/drivers/google"
@@ -49,6 +51,7 @@ func driverGoogleCloud(opt *CreateOptions) *google.Driver {
 	d.Scopes = opt.GoogleScopes
 	d.Project = opt.GoogleProject
 	d.DiskSize = opt.GoogleDiskSize
+	d.Tags = strings.Join(opt.GoogleTags, ",")
 
 	// common
 	d.MachineName = opt.Name
