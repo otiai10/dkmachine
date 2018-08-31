@@ -12,3 +12,7 @@ opt := &dkmachine.CreateOptions{
 
 machine, err := dkmachine.Create(opt)
 ```
+
+# Test
+
+Testing requires VirtualBox on your environment.

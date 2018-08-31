@@ -6,6 +6,8 @@ import (
 
 	"github.com/docker/machine/libmachine/drivers/rpc"
 	"github.com/docker/machine/libmachine/host"
+	"github.com/docker/machine/libmachine/provision"
+	"github.com/docker/machine/libmachine/swarm"
 )
 
 const bin = "docker-machine"
@@ -38,6 +40,34 @@ func (m *Machine) CertPath() string {
 func (m *Machine) Version() string {
 	// return fmt.Sprintf("%d", m.HostConfig.ConfigVersion)
 	return ""
+}
+
+// RegenerateCerts ...
+func (m *Machine) RegenerateCerts() error {
+
+	// driver, ok := m.HostConfig.Driver.(*rpcdriver.RPCClientDriver)
+	// if !ok {
+	// 	return fmt.Errorf("failed to retrieve driver")
+	// }
+
+	// provisioner, err := provision.DetectProvisioner(driver)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// return provisioner.Provision(swarm.Options{}, m.HostOptions.AuthOptions, m.HostOptions.EngineOptions)
+
+	driver, ok := m.HostConfig.Driver.(*rpcdriver.RPCClientDriver)
+	if !ok {
+		return fmt.Errorf("couldn't retrive driver from machine.Host.Driver")
+	}
+
+	provisioner, err := provision.DetectProvisioner(driver)
+	if err != nil {
+		return err
+	}
+
+	return provisioner.Provision(swarm.Options{}, *m.HostConfig.AuthOptions(), *m.HostConfig.HostOptions.EngineOptions)
 }
 
 // GetPrivateIPAddress returns the private IP address of this machine.
