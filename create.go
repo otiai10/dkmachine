@@ -21,9 +21,6 @@ func Create(opt *CreateOptions) (*Machine, error) {
 	if err != nil {
 		return machine, err
 	}
-	defer func() {
-		machine.HostConfig = c.Host
-	}()
 
 	exists, err := c.API.Exists(c.Host.Name)
 	if err != nil {
@@ -46,5 +43,6 @@ func Create(opt *CreateOptions) (*Machine, error) {
 		return machine, err
 	}
 
+	machine.HostConfig = c.Host
 	return machine, nil
 }
